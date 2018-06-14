@@ -27,11 +27,11 @@ std::vector<Packet> Packet::loadImage(std::string filename)
 
 bool Packet::validate_crc() const
 {
-    auto crc_calc = crc32(0L, data, Packet::PACKET_SIZE) & 0xFF;
+    auto crc_calc = crc32(0L, data.data(), Packet::PACKET_SIZE) & 0xFF;
     return crc == crc_calc;
 }
 
 void Packet::calc_crc()
 {
-    crc = crc32(0L, data, Packet::PACKET_SIZE) & 0xFF;
+    crc = crc32(0L, data.data(), Packet::PACKET_SIZE) & 0xFF;
 }

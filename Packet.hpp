@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <iostream>
+#include <string>
+#include <array>
 
 #include <cstdint>
 #include <cstdlib>
@@ -16,7 +16,7 @@ struct Packet {
 
     uint8_t id;
     uint8_t crc;
-    uint8_t data[PACKET_SIZE];
+    std::array<uint8_t, PACKET_SIZE> data;
 
     void setId(uint8_t id) { this->id = id; }
     bool validate_crc() const;
