@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <random>
 
 #include <cstdint>
 #include <cstdlib>
@@ -11,8 +12,10 @@
 #include <zlib.h>
 
 struct Packet {
-    static const size_t IMAGE_SIZE = 500;
+    static const size_t IMAGE_DIM = 500;
+    static const size_t PIXELS = IMAGE_DIM * IMAGE_DIM;
     static const size_t PACKET_SIZE = 100;
+    static const size_t PACKETS = PIXELS / PACKET_SIZE;
 
     uint8_t id;
     uint8_t crc;
@@ -21,9 +24,11 @@ struct Packet {
     void setId(uint8_t id) { this->id = id; }
     bool validate_crc() const;
     void calc_crc();
+    void corrupt(double errorRate);
 
     static std::vector<Packet> loadImage(std::string filename);
+    static void writeImage(const std::vector<Packet> &packets, std::string filename);
 };
 
-static_assert(Packet::IMAGE_SIZE * Packet::IMAGE_SIZE % Packet::PACKET_SIZE == 0, "Chunk size must be a factor of pixel count");
+static_assert(Packet::PIXELS % Packet::PACKET_SIZE == 0, "Chunk size must be a factor of pixel count");
 
