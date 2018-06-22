@@ -12,9 +12,9 @@
 #include <zlib.h>
 
 struct Packet {
-    static const size_t IMAGE_DIM = 500;
+    static const size_t IMAGE_DIM = 256;
     static const size_t PIXELS = IMAGE_DIM * IMAGE_DIM;
-    static const size_t PACKET_SIZE = 100;
+    static const size_t PACKET_SIZE = 256;
     static const size_t PACKETS = PIXELS / PACKET_SIZE;
 
     uint8_t id;
@@ -31,4 +31,4 @@ struct Packet {
 };
 
 static_assert(Packet::PIXELS % Packet::PACKET_SIZE == 0, "Chunk size must be a factor of pixel count");
-
+static_assert(Packet::PACKETS <= 256, "A one-byte index cannot support more than 256 Packets");
