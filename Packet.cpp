@@ -1,5 +1,17 @@
 #include "Packet.hpp"
 
+Packet::Packet()
+{}
+
+Packet::Packet(std::vector<unsigned char> bytes)
+{
+    id = bytes[0];
+    crc = bytes[1];
+
+    for (size_t i = 0; i < data.size() && i < bytes.size() - 2; i++)
+        data[i] = bytes[i + 2];
+}
+
 std::vector<Packet> Packet::loadImage(std::string filename)
 {
     std::vector<unsigned char> image; //the raw pixels
@@ -51,10 +63,10 @@ void Packet::writeImage(const std::vector<Packet> &packets, std::string filename
     }
 }
 
-bool Packet::validate_crc() const
+bool Packet::check_crc() const
 {
-    auto crc_calc = crc32(0L, data.data(), Packet::PACKET_SIZE) & 0xFF;
-    return crc == crc_calc;
+    auto crc = crc32(0L, data.data(), Packet::PACKET_SIZE) & 0xFF;
+    return this->crc == crc;
 }
 
 void Packet::calc_crc()
@@ -62,21 +74,14 @@ void Packet::calc_crc()
     crc = crc32(0L, data.data(), Packet::PACKET_SIZE) & 0xFF;
 }
 
-void Packet::corrupt(double errorRate)
+std::vector<unsigned char> Packet::get_data() const
 {
-    std::random_device r;
-    std::default_random_engine rng(r());
-    std::uniform_real_distribution<double> real_dist(0, 1);
-    std::uniform_int_distribution<uint8_t> byte_dist(0, 255);
-    double random;
+    const unsigned char *raw_data = (const unsigned char *)this;
+    std::vector<unsigned char> bytes;
 
-    //Randomly flip random bits
-    for (auto &byte : data)
-    {
-        random = real_dist(rng);
+    for (unsigned i = 0; i < sizeof(Packet); i++)
+        bytes.push_back(raw_data[i]);
 
-        if (random < errorRate)
-            byte ^= byte_dist(rng);
-    }
+    return bytes;
 }
 

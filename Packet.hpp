@@ -21,10 +21,14 @@ struct Packet {
     uint8_t crc;
     std::array<uint8_t, PACKET_SIZE> data;
 
+    Packet();
+    Packet(std::vector<unsigned char>);
+
     void setId(uint8_t id) { this->id = id; }
-    bool validate_crc() const;
     void calc_crc();
-    void corrupt(double errorRate);
+    bool check_crc() const;
+
+    std::vector<unsigned char> get_data() const;
 
     static std::vector<Packet> loadImage(std::string filename);
     static void writeImage(const std::vector<Packet> &packets, std::string filename);
@@ -32,3 +36,4 @@ struct Packet {
 
 static_assert(Packet::PIXELS % Packet::PACKET_SIZE == 0, "Chunk size must be a factor of pixel count");
 static_assert(Packet::PACKETS <= 256, "A one-byte index cannot support more than 256 Packets");
+static_assert(sizeof(Packet) == 2 + Packet::PACKET_SIZE, "Alignment of the Packet data struture is off");
