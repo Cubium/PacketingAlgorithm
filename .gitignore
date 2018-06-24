@@ -1,3 +1,11 @@
 compile_commands.json
 transfer
 corrupted.png
+output
+Makefile
+CMakeCache.txt
+CMakeFiles/
+encoded
+output.png
+read
+cmake_install.cmake

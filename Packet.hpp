@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-#include "lodepng/lodepng.h"
+#include "lodepng.h"
 #include <zlib.h>
 
 struct Packet {
