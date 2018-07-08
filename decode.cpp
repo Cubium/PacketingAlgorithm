@@ -20,8 +20,6 @@ int main(int argc, char **argv)
         for (unsigned n = 0; n < sizeof(Packet); n++) {
             unsigned char c = input.get();
 
-            std::cout.put(c);
-
             if (input.eof()) {
                 std::cerr << "Reached EOF early" << std::endl;
                 return 1;
