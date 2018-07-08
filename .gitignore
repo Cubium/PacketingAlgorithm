@@ -9,3 +9,5 @@ encoded
 output.png
 read
 cmake_install.cmake
+decode
+encode
