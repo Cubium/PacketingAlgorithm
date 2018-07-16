@@ -1,7 +1,6 @@
 #include "Packet.hpp"
 
-Packet::Packet()
-{}
+Packet::Packet() = default;
 
 Packet::Packet(std::vector<unsigned char> bytes)
 {
@@ -12,12 +11,12 @@ Packet::Packet(std::vector<unsigned char> bytes)
         data[i] = bytes[i + 2];
 }
 
-std::vector<Packet> Packet::loadImage(std::string filename)
+std::vector<Packet> Packet::loadImage(const std::string& filename)
 {
     std::vector<unsigned char> image; //the raw pixels
     std::vector<Packet> packets;
     unsigned dim = Packet::IMAGE_DIM;
-    
+
     unsigned error = lodepng::decode(image, dim, dim, filename);
     if (error) {
         std::cerr << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
@@ -26,8 +25,8 @@ std::vector<Packet> Packet::loadImage(std::string filename)
 
     Packet current;
     auto iter = image.begin();
-    for (size_t i=0; i < Packet::PACKETS; i++) {
-        for (size_t n=0; n < Packet::PACKET_SIZE; n++) {
+    for (size_t i = 0; i < Packet::PACKETS; i++) {
+        for (size_t n = 0; n < Packet::PACKET_SIZE; n++) {
             current.data[n] = *iter;
             iter += 4;
         }
@@ -40,15 +39,15 @@ std::vector<Packet> Packet::loadImage(std::string filename)
     return packets;
 }
 
-void Packet::writeImage(const std::vector<Packet> &packets, std::string filename)
+void Packet::writeImage(const std::vector<Packet>& packets, const std::string& filename)
 {
     std::vector<unsigned char> imageData;
     imageData.reserve(PIXELS * 4);
 
-    for (auto &packet : packets) {
+    for (auto& packet : packets) {
         for (uint8_t byte : packet.data) {
             //RGB are all equal in greyscale
-            for (auto i=0; i<3; i++) {
+            for (auto i = 0; i < 3; i++) {
                 imageData.push_back(static_cast<unsigned char>(byte));
             }
             //Alpha (RGBA encoding)
@@ -57,8 +56,8 @@ void Packet::writeImage(const std::vector<Packet> &packets, std::string filename
     }
 
     auto error = lodepng::encode(filename, imageData, Packet::IMAGE_DIM, Packet::IMAGE_DIM);
-    if(error) {
-        std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+    if (error) {
+        std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
         exit(2);
     }
 }
@@ -76,7 +75,7 @@ void Packet::calc_crc()
 
 std::vector<unsigned char> Packet::get_data() const
 {
-    const unsigned char *raw_data = (const unsigned char *)this;
+    const auto* raw_data = (const unsigned char*)this;
     std::vector<unsigned char> bytes;
 
     for (unsigned i = 0; i < sizeof(Packet); i++)
@@ -84,4 +83,3 @@ std::vector<unsigned char> Packet::get_data() const
 
     return bytes;
 }
-

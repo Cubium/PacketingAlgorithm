@@ -1,9 +1,9 @@
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <array>
+#include <iostream>
 #include <random>
+#include <string>
 
 #include <cstdint>
 #include <cstdlib>
@@ -30,8 +30,8 @@ struct Packet {
 
     std::vector<unsigned char> get_data() const;
 
-    static std::vector<Packet> loadImage(std::string filename);
-    static void writeImage(const std::vector<Packet> &packets, std::string filename);
+    static std::vector<Packet> loadImage(const std::string& filename);
+    static void writeImage(const std::vector<Packet>& packets, const std::string& filename);
 };
 
 static_assert(Packet::PIXELS % Packet::PACKET_SIZE == 0, "Chunk size must be a factor of pixel count");

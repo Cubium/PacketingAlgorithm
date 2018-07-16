@@ -1,9 +1,9 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include "Packet.hpp"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     if (argc == 1) {
         std::cerr << "Not enough arguments. Provide the file to read." << std::endl;
@@ -25,16 +25,15 @@ int main(int argc, char **argv)
                 return 1;
             }
 
-            buffer.push_back(c);
+            buffer.emplace_back(c);
         }
 
-        packets.push_back(Packet(buffer));
+        packets.emplace_back(Packet(buffer));
         buffer.clear();
     }
 
     Packet::writeImage(packets, "output.png");
- 
+
     input.close();
     return 0;
 }
-
